@@ -1,0 +1,46 @@
+<resources>
+
+    <string name="app_name">我的微信 </string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="welcome">Welcome Back</string>
+    <string name="description">No file</string>
+    <string name="weixin">微信</string>
+    <string name="submit">登陆</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="welcome_lable1">使用账号号登录</string>
+    <string name="register">注册</string>
+    <string name="welcome_lable2">如果你没有帐号，请注册</string>
+    <string name="back">返回</string>
+    <string name="send">发送</string>
+    <string name="press_talking">按住说话</string>
+    <string name="setting">设置</string>
+    <string name="personal_info">个人信息</string>
+    <string name="chat_background">聊天背景</string>
+    <string name="help_and_reback">帮助与反馈</string>
+    <string name="about_soft">关于软件</string>
+    <string name="clear_rocord">清空聊天记录</string>
+    <string name="exit_submit">退出登录</string>
+    <string name="person_info">详细资料</string>
+    <string name="send_msg">发送消息</string>
+    <string name="motto">格言：</string>
+    <string name="user_class">班级：</string>
+    <string name="userid">用户账号：</string>
+    <string name="exit_prompt">退出后不会删除任何历史数据，下次\n登录依然可以使用本帐号</string>
+    <string name="exit_prompt1">退出后，你将收不到新的消\n息.确定要退出？</string>
+    <string name="exit_cancel">取消</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="chat">聊天</string>
+    <string name="contacts">通讯录</string>
+    <string name="news">新鲜事</string>
+    <string name="search">搜索</string>
+	<string name="onloading">正在登录</string>
+	
+	
+    <string name="pull_to_refresh_pull_label">下拉可以刷新</string>
+    <string name="pull_to_refresh_release_label">松开可以刷新</string>
+    <string name="pull_to_refresh_refreshing_label">加载中...</string>
+    <string name="pull_to_refresh_tap_label">下拉可以刷新</string>
+    <string name="pull_to_refresh_update">最近更新：</string>
+</resources>
