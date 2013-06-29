@@ -9,7 +9,7 @@
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:background="@drawable/title_bar"
+        android:background="@drawable/head_bg"
         android:gravity="center_vertical" >
 
         <TextView
@@ -19,39 +19,9 @@
             android:text="@string/chat"
             android:textColor="#ffffff"
             android:textSize="20sp" />
-
-        <ImageButton
-            android:id="@+id/right_btn"
-            android:layout_width="67dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/title_btn_right"
-            android:onClick="btnmainright"
-            android:src="@drawable/title_btn_function" 
-            android:contentDescription="@string/description"/>
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_bar_bg"
-        android:gravity="center" >
 
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/search_bar_edit_bg"
-            android:drawableLeft="@drawable/search_bar_icon_normal"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:hint="@string/search"
-            android:singleLine="true"
-            android:textColor="#000" >
-        </EditText>
-    </LinearLayout>
 
     <ListView
         android:id="@+id/chat_list"

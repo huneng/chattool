@@ -13,12 +13,15 @@ public class Welcome extends Activity {
 	}
 
 	public void register(View v) {
-		
+		Intent intent = new Intent();
+		intent.setClass(Welcome.this, Register.class);
+		startActivity(intent);
 	}
 
 	public void login(View v) {
 		Intent intent = new Intent();
 		intent.setClass(Welcome.this, Submit.class);
 		startActivity(intent);
+		this.finish();
 	}
 }

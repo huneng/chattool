@@ -26,8 +26,6 @@ import android.widget.TextView;
  */
 public class PullToRefreshListView extends ListView implements OnScrollListener {  
 	   
-    private final static String TAG = "PullToRefreshListView";  
-    
     // 下拉刷新标志   
     private final static int PULL_To_REFRESH = 0; 
     // 松开刷新标志   
@@ -51,7 +49,6 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
     // 用于保证startY的值在一个完整的touch事件中只被记录一次   
     private boolean isRecored;  
   
-    private int headContentWidth;  
     private int headContentHeight;  
     private int headContentOriginalTopPadding;
   
@@ -105,14 +102,11 @@ public class PullToRefreshListView extends ListView implements OnScrollListener 
         
         measureView(headView);  
         headContentHeight = headView.getMeasuredHeight();  
-        headContentWidth = headView.getMeasuredWidth(); 
+        headView.getMeasuredWidth(); 
         
         headView.setPadding(headView.getPaddingLeft(), -1 * headContentHeight, headView.getPaddingRight(), headView.getPaddingBottom());  
         headView.invalidate();  
 
-        //System.out.println("初始高度："+headContentHeight); 
-        //System.out.println("初始TopPad："+headContentOriginalTopPadding);
-        
         addHeaderView(headView);        
         setOnScrollListener(this); 
     }  

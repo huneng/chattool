@@ -1,7 +1,7 @@
 package com.huneng.chattool.app;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -9,15 +9,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.huneng.chattool.adapter.ChatMsgViewAdapter;
+import com.huneng.chattool.data.ChatMessage;
 import com.huneng.chattool.data.ChatMsgEntity;
+import com.huneng.chattool.net.NetWork;
 
 import android.app.Activity;
-import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +44,7 @@ public class ChatActivity extends Activity {
 	private RelativeLayout mBottom;
 	private ListView mChatListView;
 	private ChatMsgViewAdapter mAdapter;
-	private List<ChatMsgEntity> mDatas = new ArrayList<ChatMsgEntity>();
+	List<ChatMsgEntity> mDatas = new LinkedList<ChatMsgEntity>();;
 	private boolean isShort = false;
 	private LinearLayout voice_rcd_hint_loading;
 	private LinearLayout voice_rcd_hint_rcding;
@@ -57,41 +62,62 @@ public class ChatActivity extends Activity {
 	private String name1;
 	private String myname;
 	private String path;
+	private String myId;
+	private String from_photo;
+	private String to_photo;
+	private AppContext appcontext;
 
-	/*
+	/**
 	 * chatPrefer chatList:chatData chatData:userid, content,time, date
 	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		Intent intent = getIntent();
-		userId = intent.getStringExtra("userId");
-		name1 = intent.getStringExtra("name1");
-		myname = intent.getStringExtra("name2");
-		int notiId = intent.getIntExtra("notiId", -1);
-		if (notiId != -1) {
-			NotificationManager notiMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			notiMgr.cancel("message" + MainWeiXin.notiId, MainWeiXin.notiId);
-		}
+		myId = intent.getStringExtra("to_id");
+		userId = intent.getStringExtra("from_id");
+		name1 = intent.getStringExtra("from_name");
+		myname = intent.getStringExtra("to_name");
+		from_photo = intent.getStringExtra("from_photo");
+		to_photo = intent.getStringExtra("to_photo");
+		Log.v("huneng", "Talk budy ids:" + userId + "," + myId);
+
+		// int notiId = intent.getIntExtra("notiId", -1);
+		// Log.v("huneng", "Notification Id:" + notiId);
+		// if (notiId != -1) {
+		// NotificationManager notiMgr = (NotificationManager)
+		// getSystemService(NOTIFICATION_SERVICE);
+		// notiMgr.cancel("message" + notiId, notiId);
+		// }
 		setContentView(R.layout.chat);
 		// 启动activity时不自动弹出软键盘
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-		chatPrefer = getSharedPreferences("chat", MODE_PRIVATE);
-
 		initView();
 
+		path = FileHelper.rootPath + "/audio";
 		try {
 			initData();
 		} catch (JSONException e) {
 		}
-
-		path = Environment.getExternalStorageDirectory() + "/chattool/audio";
+		IntentFilter filter = new IntentFilter("com.huneng.chattool.msg");
+		MyBroadCastReciver receiver = new MyBroadCastReciver();
+		registerReceiver(receiver, filter);
+		appcontext = (AppContext) getApplication();
 
 	}
 
+	public void getPersonInfo(View v) {
+		Intent intent = new Intent();
+		intent.setClass(this, PersonInfo.class);
+		intent.putExtra("userId", userId);
+		startActivity(intent);
+	}
+
 	void initData() throws JSONException {
+		chatPrefer = getSharedPreferences(MainActivity.CHAT_RECORD_PREFER_NAME,
+				MODE_PRIVATE);
+		mDatas.clear();
 		String str = chatPrefer.getString(userId, "[]");
 		JSONArray array = new JSONArray(str);
 		JSONObject object;
@@ -103,16 +129,20 @@ public class ChatActivity extends Activity {
 			if (object.getString("name").equals(name1)) {
 				entity.setMsgType(true);
 				entity.setName(name1);
+				entity.setPhoto(from_photo);
 			} else {
 				entity.setMsgType(false);
 				entity.setName(myname);
+				entity.setPhoto(to_photo);
 			}
 			entity.setText(object.getString("text"));
 			mDatas.add(entity);
 		}
 		mAdapter = new ChatMsgViewAdapter(this, mDatas);
 		mChatListView.setAdapter(mAdapter);
-
+		int t = mChatListView.getCount() - 1;
+		if (t >= 0)
+			mChatListView.setSelection(t);
 	}
 
 	public void initView() {
@@ -203,11 +233,12 @@ public class ChatActivity extends Activity {
 					return false;
 				}
 				ChatMsgEntity entity = new ChatMsgEntity();
-				entity.setDate(getDate());
+				entity.setDate(appcontext.getDate());
 				entity.setName(myname);
 				entity.setMsgType(false);
 				entity.setTime(time + "\"");
 				entity.setText(voiceName);
+				entity.setPhoto(to_photo);
 				mDatas.add(entity);
 				mAdapter.notifyDataSetChanged();
 				mChatListView.setSelection(mChatListView.getCount() - 1);
@@ -217,27 +248,38 @@ public class ChatActivity extends Activity {
 		}
 	};
 
-	public void btnBack(View v) {
-//		onPause();
-		finish();
-	}
+	class MyBroadCastReciver extends BroadcastReceiver {
 
-	public void btnSend(View v) {
-		send();
-	}
-
-	@Override
-	protected void onPause() {
-		String str = "";
-		int i;
-		for (i = 0; i < mDatas.size() - 1; i++) {
-			str += mDatas.get(i).toString() + ',';
-
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String str = intent.getStringExtra("msg");
+			ChatMessage msg = new ChatMessage(str);
+			if (!(msg.from_id.equals(userId))) {
+				return;
+			}
+			handleReceiveData(msg);
 		}
-		str = "[" + str + mDatas.get(i) + "]";
-		SharedPreferences.Editor editor = chatPrefer.edit();
-		editor.putString(userId, str).commit();
-		super.onPause();
+	}
+
+	void handleReceiveData(ChatMessage msg) {
+		ChatMsgEntity entity = new ChatMsgEntity();
+		entity.setDate(appcontext.getDate());
+		entity.setText(msg.message);
+		entity.setName(name1);
+		entity.setMsgType(true);
+		entity.setPhoto(from_photo);
+		if (msg.message.endsWith(".3gp")) {
+			long a = SystemClock.currentThreadTimeMillis();
+			NetWork.downloadAudio(msg.message);
+			long b = SystemClock.currentThreadTimeMillis();
+			int t = (int) ((b - a) / 100);
+			entity.setTime("" + t);
+		} else {
+			entity.setTime("");
+		}
+		mDatas.add(entity);
+		mAdapter.notifyDataSetChanged();
+		mChatListView.setSelection(mChatListView.getCount() - 1);
 	}
 
 	private void send() {
@@ -245,35 +287,26 @@ public class ChatActivity extends Activity {
 		if (contString.length() > 0) {
 			ChatMsgEntity entity = new ChatMsgEntity();
 
-			entity.setDate(getDate());
+			entity.setDate(appcontext.getDate());
 			entity.setTime("");
 			entity.setName(myname);
 			entity.setMsgType(false);
 			entity.setText(contString);
-
+			entity.setPhoto(to_photo);
 			mDatas.add(entity);
 			mAdapter.notifyDataSetChanged();
 
-			mMsgEdit.setText("");
-
 			mChatListView.setSelection(mChatListView.getCount() - 1);
+			mMsgEdit.setText("");
+			ChatMessage msg = new ChatMessage();
+			msg.from_id = myId;
+			msg.to_id = userId;
+			msg.message = entity.getText();
+			if (MainActivity.msglistener != null)
+				MainActivity.msglistener.sendMsg(msg.toString());
+			if (msg.message.endsWith(".3gp")) {
+			}
 		}
-	}
-
-	public static String getDate() {
-		Calendar c = Calendar.getInstance();
-
-		String year = String.valueOf(c.get(Calendar.YEAR));
-		String month = String.valueOf(c.get(Calendar.MONTH));
-		String day = String.valueOf(c.get(Calendar.DAY_OF_MONTH) + 1);
-		String hour = String.valueOf(c.get(Calendar.HOUR_OF_DAY));
-		String mins = String.valueOf(c.get(Calendar.MINUTE));
-
-		StringBuffer sbBuffer = new StringBuffer();
-		sbBuffer.append(year + "-" + month + "-" + day + " " + hour + ":"
-				+ mins);
-
-		return sbBuffer.toString();
 	}
 
 	private static final int POLL_INTERVAL = 300;
@@ -314,7 +347,6 @@ public class ChatActivity extends Activity {
 		case 2:
 		case 3:
 			volume.setImageResource(R.drawable.amp2);
-
 			break;
 		case 4:
 		case 5:
@@ -338,12 +370,36 @@ public class ChatActivity extends Activity {
 		}
 	}
 
+	public void btnBack(View v) {
+		finish();
+	}
+
+	public void btnSend(View v) {
+		send();
+	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			this.finish();
 		}
 		return true;
+	}
+
+	@Override
+	protected void onPause() {
+		String str = "";
+		int i;
+
+		for (i = 0; i < mDatas.size() - 1; i++) {
+			str += mDatas.get(i).toString() + ',';
+
+		}
+		if (mDatas.size() > i)
+			str = "[" + str + mDatas.get(i) + "]";
+		SharedPreferences.Editor editor = chatPrefer.edit();
+		editor.putString(userId, str).commit();
+		super.onPause();
 	}
 
 }

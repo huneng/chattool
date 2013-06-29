@@ -3,58 +3,77 @@ package com.huneng.chattool.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class News {
-	public String message;
-	public UserInformation user;
-	public String[] follows;
+import com.huneng.chattool.net.NetWork;
 
+public class News {
+	public String id;
+	public String userId;
+	public String followId;
+
+	public String message;
+	public String time;
+	public String creat_img;
+	public String creat_name;
 	public News() {
+
+		userId = "";
+		followId = null;
 		message = "";
-		follows = null;
-		user = null;
+		time = "";
 	}
 
 	public News(String data) {
+
 		try {
 			JSONObject object = new JSONObject(data);
-			message = object.getString("message");
-			user = new UserInformation(object.getString("user"));
-			JSONArray array = object.getJSONArray("followId");
-			int length = array.length();
-			follows = new String[length];
-			for (int i = 0; i < length; i++) {
-				follows[i] = (String) array.get(i);
-			}
+			id = object.getString("id");
+			userId = object.getString("Creat_id");
+			followId = object.getString("Follow_id");
+			message = object.getString("Content");
+			time = object.getString("Time");
+			
 		} catch (JSONException e) {
 		}
+		creat_img="";
+		creat_name="";
 
+	}
+
+	public void setTime(String time) {
+		this.time = new String(time);
 	}
 
 	public String toString() {
-		
 		JSONObject object = new JSONObject();
 		try {
-			object.put("message", message);
-			object.put("user", user.toString());
-			JSONArray array = new JSONArray();
-			for (int i = 0; i < follows.length; i++) {
-				array.put(follows[i]);
-			}
-			object.put("followId", array);
+			object.put("id", id);
+			object.put("Content", message);
+			object.put("Creat_id", userId);
+			object.put("Follow_id", followId);
+			object.put("Time", time);
 		} catch (JSONException e) {
 		}
+
 		return object.toString();
 	}
-	public Map<String, Object> toMap(){
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("name", user.name);
-		map.put("img", user.photo);
-		map.put("message", message);
-		map.put("followId", follows);
-		return map;
-	} 
+
+	public Map<String, String> toMap() {
+		Map<String, String> object = new HashMap<String, String>();
+		User user = NetWork.getUser(userId);
+		if (user == null)
+			return null;
+		object.put("id", id);
+		object.put("Content", message);
+		object.put("Creat_id", userId);
+		object.put("Follow_id", followId);
+		object.put("Time", time);
+		object.put("Creat_name", user.name);
+		object.put("Creat_photo", user.photo);
+		return object;
+	}
+
+
 }

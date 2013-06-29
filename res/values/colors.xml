@@ -3,4 +3,5 @@
     <color name="window_bg">#ffeef1f3</color>
     <color name="qqblue">#ff54acea</color>
     <color name="transparent">#00000000</color>
+    <color name="background">#00000000</color>
 </resources>

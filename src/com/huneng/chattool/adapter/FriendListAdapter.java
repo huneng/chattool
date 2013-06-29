@@ -1,13 +1,15 @@
 package com.huneng.chattool.adapter;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import com.huneng.chattool.app.MainWeiXin;
+import com.huneng.chattool.app.FileHelper;
+import com.huneng.chattool.app.MainActivity;
 import com.huneng.chattool.app.R;
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +20,12 @@ import android.widget.TextView;
 public class FriendListAdapter extends BaseAdapter {
 	LayoutInflater inflater;
 	List<Map<String, String>> data;
-	MainWeiXin parent;
-	public FriendListAdapter(MainWeiXin parent, List<Map<String, String>> data) {
+	MainActivity parent;
+
+	public FriendListAdapter(MainActivity parent, List<Map<String, String>> data) {
 		this.parent = parent;
-		inflater = LayoutInflater.from( parent.getApplicationContext());
+		
+		inflater = LayoutInflater.from(parent.getApplicationContext());
 		this.data = data;
 	}
 
@@ -46,8 +50,6 @@ public class FriendListAdapter extends BaseAdapter {
 		public TextView lable;
 	}
 
-
- 	@SuppressLint("NewApi")
 	@Override
 	public View getView(int position, View convertView, ViewGroup p) {
 		ViewHolder holder = null;
@@ -63,15 +65,14 @@ public class FriendListAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		String photo = (String) data.get(position).get("img");
-		photo = parent.path +"/image/" + photo;
-		File file = new File(photo);
-		if (!file.isFile()) {
-			holder.img.setImageResource(R.drawable.abaose);
-		} else {
-			holder.img.setBackground(Drawable.createFromPath((String) data.get(
-					position).get("img")));
+
+		Bitmap bitmap = FileHelper.getBitmap(data.get(position).get("img"));
+		if (bitmap == null) {
+			bitmap = BitmapFactory.decodeResource(parent.getResources(),
+					R.drawable.app_icon);
 		}
+
+		holder.img.setImageBitmap(bitmap);
 		holder.name.setText(data.get(position).get("username").toString());
 		holder.lable.setText(data.get(position).get("lable").toString());
 		return convertView;

@@ -9,7 +9,7 @@
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:background="@drawable/title_bar"
+        android:background="@drawable/head_bg"
         android:gravity="center_horizontal|center_vertical" >
 
         <TextView
@@ -36,16 +36,17 @@
                 android:layout_marginTop="14dp"
                 android:background="@drawable/preference_single_item"
                 android:clickable="true"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:onClick="displayUserInfo" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="displayUserInfo"
                     android:padding="8dp"
                     android:text="@string/personal_info"
                     android:textColor="#000"
-                    android:textSize="17sp" 
-                    android:onClick="displayUserInfo"/>
+                    android:textSize="17sp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -64,13 +65,14 @@
                 android:layout_marginTop="14dp"
                 android:background="@drawable/preference_single_item"
                 android:clickable="true"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:onClick="addFriend" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:text="@string/chat_background"
+                    android:text="@string/search_and_add_friend"
                     android:textColor="#000"
                     android:textSize="17sp" />
 
@@ -141,24 +143,32 @@
                 android:layout_marginTop="14dp"
                 android:background="@drawable/preference_single_item"
                 android:clickable="true"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:onClick="clear_data" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="clear_data"
                     android:padding="8dp"
-                    android:text="@string/clear_rocord"
+                    android:text="@string/clear_record"
                     android:textColor="#000"
                     android:textSize="17sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/description"
+                    android:scaleType="matrix"
+                    android:src="@drawable/mm_submenu" />
             </RelativeLayout>
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="14dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="14dp"
+                android:layout_margin="12dp"
                 android:background="@drawable/btn_style_red"
                 android:gravity="center"
                 android:onClick="exit_settings"

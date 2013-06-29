@@ -8,28 +8,28 @@
 
     <ImageView
         android:id="@+id/publish_user_photo"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:contentDescription="@string/description"
         android:paddingTop="2dp"
         android:src="@drawable/abaose" />
+
+    <TextView
+        android:id="@+id/publish_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/publish_user_photo"
+        android:paddingBottom="2dp"
+        android:paddingLeft="2dp"
+        android:paddingTop="2dp" />
 
     <LinearLayout
         android:id="@+id/publish_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="55dp"
         android:layout_marginRight="10dp"
         android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/publish_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="2dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="2dp"/>
 
         <TextView
             android:id="@+id/news_content"
@@ -38,19 +38,24 @@
             android:paddingBottom="2dp"
             android:paddingLeft="5dp"
             android:paddingRight="15dp"
-            android:paddingTop="2dp"
-            android:singleLine="false" />
+            android:paddingTop="4dp"
+            android:singleLine="false"
+            android:textSize="16sp" />
 
-        <LinearLayout
-            android:id="@+id/join_person_list_layout"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/follow_person_id"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-        </LinearLayout>
+            android:paddingBottom="2dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="15dp"
+            android:paddingTop="4dp"
+            android:textSize="12sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
             android:gravity="center" >
 
             <TextView
@@ -59,7 +64,8 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:paddingRight="0dp"
-                android:paddingTop="0dp" />
+                android:paddingTop="0dp"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/join_btn"

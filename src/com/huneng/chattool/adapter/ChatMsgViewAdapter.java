@@ -2,10 +2,13 @@ package com.huneng.chattool.adapter;
 
 import java.util.List;
 
+import com.huneng.chattool.app.FileHelper;
 import com.huneng.chattool.app.R;
 import com.huneng.chattool.data.ChatMsgEntity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
@@ -26,10 +30,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 	private LayoutInflater mInflater;
 	private MediaPlayer mMediaPlayer = new MediaPlayer();
+	private Context context;
 
 	public ChatMsgViewAdapter(Context context, List<ChatMsgEntity> coll) {
 		this.coll = coll;
 		mInflater = LayoutInflater.from(context);
+		this.context = context;
 	}
 
 	public int getCount() {
@@ -61,9 +67,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-
-		final ChatMsgEntity entity = coll.get(position);
-		boolean isComMsg = entity.getMsgType();
+		boolean isComMsg = coll.get(position).getMsgType();
 
 		ViewHolder viewHolder = null;
 		if (convertView == null) {
@@ -85,40 +89,55 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			viewHolder.tvTime = (TextView) convertView
 					.findViewById(R.id.tv_time);
 			viewHolder.isComMsg = isComMsg;
+			viewHolder.ivHead = (ImageView) convertView
+					.findViewById(R.id.iv_userhead);
 
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
-		viewHolder.tvSendTime.setText(entity.getDate());
+		viewHolder.tvSendTime.setText(coll.get(position).getDate());
 
-		if (entity.getText().contains(".3gp")) {
+		if (coll.get(position).getText().contains(".3gp")) {
 			viewHolder.tvContent.setText("");
 			viewHolder.tvContent.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 					R.drawable.chatto_voice_playing, 0);
-			viewHolder.tvTime.setText(entity.getTime());
+
 		} else {
-			viewHolder.tvContent.setText(entity.getText());
+			viewHolder.tvContent.setText(coll.get(position).getText());
 			viewHolder.tvContent.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 					0, 0);
 			viewHolder.tvTime.setText("");
 		}
-		viewHolder.tvContent.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				if (entity.getText().contains(".3gp")) {
-					playMusic(android.os.Environment
-							.getExternalStorageDirectory()
-							+ "/chattool/audio/"
-							+ entity.getText());
-					tv = (TextView) v;
-				}
-			}
-		});
-		viewHolder.tvUserName.setText(entity.getName());
-
+		viewHolder.tvContent
+				.setOnClickListener(new MyOnClickListener(position));
+		viewHolder.tvUserName.setText(coll.get(position).getName());
+		viewHolder.tvTime.setText(coll.get(position).getTime());
+		Bitmap bitmap = FileHelper.getBitmap(coll.get(position).getPhoto());
+		if (bitmap == null) {
+			bitmap = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.app_icon);
+		}
+		viewHolder.ivHead.setImageBitmap(bitmap);
 		return convertView;
+	}
+
+	class MyOnClickListener implements OnClickListener {
+		int position;
+
+		public MyOnClickListener(int index) {
+			this.position = index;
+		}
+
+		@Override
+		public void onClick(View v) {
+			if (coll.get(position).getText().contains(".3gp")) {
+				playMusic(android.os.Environment.getExternalStorageDirectory()
+						+ "/chattool/audio/" + coll.get(position).getText());
+				tv = (TextView) v;
+			}
+		}
 	}
 
 	TextView tv;
@@ -128,6 +147,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		public TextView tvUserName;
 		public TextView tvContent;
 		public TextView tvTime;
+		public ImageView ivHead;
 		public boolean isComMsg = true;
 	}
 

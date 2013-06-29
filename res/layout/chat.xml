@@ -39,6 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
+            android:onClick="getPersonInfo"
             android:background="@drawable/title_btn_right"
             android:contentDescription="@string/description"
             android:src="@drawable/mm_title_btn_contact_normal" />

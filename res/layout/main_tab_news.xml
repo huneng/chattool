@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:background="@drawable/title_bar"
+        android:background="@drawable/head_bg"
         android:gravity="center_vertical" >
 
         <TextView
@@ -18,6 +18,14 @@
             android:text="@string/news"
             android:textColor="#ffffff"
             android:textSize="20sp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@android:drawable/ic_input_add"
+            android:onClick="openPublishInput" />
     </RelativeLayout>
 
     <com.huneng.chattool.widget.PullToRefreshListView

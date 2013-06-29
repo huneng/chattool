@@ -12,7 +12,7 @@ public class ChatMsgEntity {
     private String text;
     
     private String time;
-    
+    private String photo;
     public String toString(){
     	JSONObject object = new JSONObject();
     	try {
@@ -20,6 +20,7 @@ public class ChatMsgEntity {
 			object.put("date", date);
 			object.put("time", time);
 			object.put("text", text);
+			object.put("photo", photo);
 		} catch (JSONException e) {
 			return "";
 		}
@@ -27,6 +28,12 @@ public class ChatMsgEntity {
     	return object.toString();
     }
 
+    public String getPhoto(){
+    	return photo;
+    }
+    public void setPhoto(String photo){
+    	this.photo = photo;
+    }
     public String getTime() {
 		return time;
 	}
@@ -72,12 +79,13 @@ public class ChatMsgEntity {
     public ChatMsgEntity() {
     }
 
-    public ChatMsgEntity(String name, String date, String text, boolean isComMsg) {
+    public ChatMsgEntity(String name, String date, String text, boolean isComMsg, String photo) {
         super();
         this.name = name;
         this.date = date;
         this.text = text;
         this.isComMeg = isComMsg;
+        this.photo = photo;
     }
 
 }

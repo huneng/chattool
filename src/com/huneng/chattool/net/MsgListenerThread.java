@@ -1,40 +1,65 @@
 package com.huneng.chattool.net;
 
-import com.huneng.chattool.data.ChatMessage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class MsgListenerThread extends Thread {
-	Context context;
-	int sleepTime;
-	String id;
-	String exit;
+	private Context context;
+	private Socket socket;
+	private InputStream is;
+	private OutputStream os;
 
-	public MsgListenerThread(Context context, String id) {
+	public MsgListenerThread(Context context, Socket s) {
 		this.context = context;
-		this.id = id;
-		exit = "online";
+		this.socket = s;
+		try {
+			is = socket.getInputStream();
+		} catch (IOException e) {
+		}
+		try {
+			os = socket.getOutputStream();
+		} catch (IOException e) {
+		}
 	}
 
 	@Override
 	public void run() {
-		while (exit != "offline") {
-			String result = HttpWork.hw.getOnlineMsg(id);
-			if (result != "") {
-				ChatMessage msg = new ChatMessage(result);
-				if (msg.id == id) {
-					Intent intent = new Intent("chattool.net.thread");
-					intent.putExtra("userId", msg.id);
-					intent.putExtra("message", msg.message);
-					exit = msg.state;
-				}
-			}
+		while (true) {
+			if (context == null || socket == null)
+				break;
 			try {
-				sleep(2000);
-			} catch (InterruptedException e) {
+				StringBuffer buffer = new StringBuffer();
+				byte b[] = new byte[1000];
+				int t = is.read(b, 0, 1000);
+				for (int i = 0; i < t; i++) {
+					buffer.append((char) b[i]);
+				}
+				String str = buffer.toString();
+				Intent intent = new Intent("com.huneng.chattool.msg");
+				intent.putExtra("msg", str);
+				context.sendBroadcast(intent);
+
+			} catch (IOException e) {
+				Log.v("Socket", e.getMessage());
+				break;
 			}
 
+		}
+	}
+
+	public void sendMsg(String msg) {
+		try {
+			os.write(msg.getBytes());
+			os.flush();
+			Log.v("Socket", "Send Success!");
+		} catch (IOException e) {
+			Log.v("Socket", "Socket Send:" + e.getMessage());
 		}
 	}
 }

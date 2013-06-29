@@ -9,7 +9,7 @@
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:background="@drawable/title_bar"
+        android:background="@drawable/head_bg"
         android:gravity="center_vertical" >
 
         <TextView

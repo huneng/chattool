@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="#caff00"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/register_top_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/head_bg" >
+
+        <Button
+            android:id="@+id/publish_reback_btn"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/title_btn_back"
+            android:onClick="publish_back"
+            android:text="@string/back"
+            android:textColor="#666666"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/edit_news"
+            android:textColor="#666666"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/publish_content_ed"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:gravity="top|left"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:padding="10dp"
+        android:scrollHorizontally="true"
+        android:singleLine="false"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/publish_news_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/btn_style_alert_dialog_special"
+        android:gravity="center"
+        android:onClick="publishNews"
+        android:text="@string/publish"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+
+</LinearLayout>

@@ -1,161 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="#eee"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/register_top_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/title_bar" >
+
+        <Button
+            android:id="@+id/register_reback_btn"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/title_btn_back"
+            android:onClick="register_back"
+            android:text="@string/back"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/register"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/register_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#eee"
-        android:gravity="center_horizontal"
-        android:orientation="vertical" >
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical"
+        android:paddingTop="20dp" >
 
-        <RelativeLayout
-            android:id="@+id/register_top_layout"
-            android:layout_width="fill_parent"
+        <ImageView
+            android:id="@+id/register_photo"
+            android:layout_width="45dp"
             android:layout_height="45dp"
-            android:background="@drawable/title_bar" >
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/description"
+            android:onClick="choicePhoto"
+            android:src="@drawable/abaose" />
 
-            <Button
-                android:id="@+id/register_reback_btn"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="@drawable/title_btn_back"
-                android:onClick="register_back"
-                android:text="返回"
-                android:textColor="#fff"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/register"
-                android:textColor="#ffffff"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/register_id_edit"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:orientation="vertical" >
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_editbox"
+            android:hint="@string/input_user_name"
+            android:singleLine="true"
+            android:textColor="#000"
+            android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/register_id_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/login_editbox"
-                android:hint="输入账号："
-                android:singleLine="true"
-                android:textColor="#000"
-                android:textSize="15sp" />
+        <EditText
+            android:id="@+id/register_passwd_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_editbox"
+            android:hint="@string/input_password"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textColor="#000"
+            android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/register_passwd_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/login_editbox"
-                android:hint="输入密码："
-                android:inputType="textPassword"
-                android:singleLine="true"
-                android:textColor="#000"
-                android:textSize="15sp" />
+        <EditText
+            android:id="@+id/register_passwd_ack_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_editbox"
+            android:hint="@string/ack_password"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textColor="#000"
+            android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/register_passwd_ack_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/login_editbox"
-                android:hint="确认密码："
-                android:inputType="textPassword"
-                android:singleLine="true"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="15dp"
-                android:background="#aaa" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <EditText
-                    android:id="@+id/register_name_edit"
-                    android:layout_width="230dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/login_editbox"
-                    android:hint="昵称："
-                    android:singleLine="true"
-                    android:textColor="#000000"
-                    android:textSize="15sp" />
-
-                <Button
-                    android:id="@+id/sex_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/register_name_edit" />
-
-            </RelativeLayout>
-
-            <EditText
-                android:id="@+id/register_address_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/login_editbox"
-                android:hint="地址："
-                android:singleLine="true"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/register_birth_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/login_editbox"
-                android:hint="生日："
-                android:inputType="date"
-                android:singleLine="true"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/register_phone_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/login_editbox"
-                android:ems="10"
-                android:hint="联系电话"
-                android:inputType="phone"
-                android:singleLine="true"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <Button
-                android:id="@+id/register_register_btn"
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/btn_style_green"
-                android:onClick="register"
-                android:text="@string/register"
-                android:textColor="#ffffff"
-                android:textSize="18sp" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/register_done_btn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/btn_style_green"
+            android:gravity="center"
+            android:onClick="register"
+            android:text="@string/register"
+            android:textColor="#4fff00"
+            android:textSize="15sp" />
     </LinearLayout>
 
-</ScrollView>
+    <TextView
+        android:id="@+id/display_id_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+</LinearLayout>

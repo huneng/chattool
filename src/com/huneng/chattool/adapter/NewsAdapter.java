@@ -1,44 +1,44 @@
 package com.huneng.chattool.adapter;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
-
-import com.huneng.chattool.app.MainWeiXin;
+import com.huneng.chattool.app.FileHelper;
+import com.huneng.chattool.app.MainActivity;
 import com.huneng.chattool.app.R;
-import com.huneng.chattool.data.UserInformation;
-import com.huneng.chattool.net.HttpWork;
+import com.huneng.chattool.data.News;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+import com.huneng.chattool.net.NetWork;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class NewsAdapter extends BaseAdapter {
-	List<Map<String, Object>> maps;
-	Context context;
-	MainWeiXin parent;
+	private MainActivity parent;
+	private List<Map<String, String>> data;
 
-	public NewsAdapter(MainWeiXin parent, List<Map<String, Object>> map) {
-		this.maps = map;
+	LayoutInflater inflater;
+
+	public NewsAdapter(MainActivity parent, List<Map<String, String>> data) {
 		this.parent = parent;
-		this.context = parent.getApplicationContext();
+		this.data = data;
+		inflater = LayoutInflater.from(parent);
+		Log.v("NewsAdapter", data.toString());
 	}
 
 	@Override
 	public int getCount() {
-		return 0;
+		return data.size();
 	}
 
 	@Override
@@ -48,86 +48,77 @@ public class NewsAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int position) {
-		return 0;
+		return position;
 	}
 
-	class ViewHolder {
-		public ImageView photo;
-		public TextView name;
-		public TextView time;
-		public Button add;
+	static class ViewHolder {
+		public ImageView userPhoto;
+		public TextView userName;
+		public TextView follows_list;
+		public TextView publishTime;
 		public TextView content;
-		public LinearLayout layout;
-		public List<TextView> list;
+		public List<TextView> joins;
+		public Button joinBtn;
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public View getView(int position, View convertView, ViewGroup p) {
-		ViewHolder holder;
+		ViewHolder holder = new ViewHolder();
 		if (convertView == null) {
-			holder = new ViewHolder();
-			LayoutInflater inflater = LayoutInflater.from(context);
 			convertView = inflater.inflate(R.layout.news_item, null);
-			holder.photo = (ImageView) convertView
+			holder.userPhoto = (ImageView) convertView
 					.findViewById(R.id.publish_user_photo);
-			holder.name = (TextView) convertView
+			holder.userName = (TextView) convertView
 					.findViewById(R.id.publish_user_name);
-			holder.time = (TextView) convertView
+			holder.publishTime = (TextView) convertView
 					.findViewById(R.id.publish_time);
-			holder.layout = (LinearLayout) convertView
-					.findViewById(R.id.join_person_list_layout);
+			holder.joinBtn = (Button) convertView.findViewById(R.id.join_btn);
+			holder.follows_list = (TextView) convertView
+					.findViewById(R.id.follow_person_id);
 			holder.content = (TextView) convertView
 					.findViewById(R.id.news_content);
+
 			convertView.setTag(holder);
-		} else {
+		} else
 			holder = (ViewHolder) convertView.getTag();
-		}
-		Map<String, Object> map = maps.get(position);
+
+		Map<String, String> map = data.get(position);
+
+		//Log.v("NewsAdapter", user.toString());
+
+		Bitmap img = FileHelper.getBitmap(map.get("Creat_photo"));
+		img = img == null ? BitmapFactory.decodeResource(parent.getResources(),
+				R.drawable.abaose) : img;
+		holder.userPhoto.setImageBitmap(img);
+		holder.userName.setText(map.get("Creat_name"));
+		holder.publishTime.setText(map.get("Time"));
+		holder.content.setText(map.get("Content"));
+		holder.follows_list.setText(map.get("Follow_id"));
+		//Log.v("NewsAdapter", map.toString());
+		holder.joinBtn.setOnClickListener(new MyOnClickListener(this, position, map.get("id")));
 		
-		String photo = (String) map.get("img");
-		photo = parent.path + "/image/" + photo;
-		
-		File file = new File(photo);
-		if (!file.isFile()) {
-			holder.photo.setImageResource(R.drawable.abaose);
-		} else {
-			holder.photo.setBackground(Drawable.createFromPath(photo));
-		}
-		
-		holder.name.setText(map.get("name").toString());
-		holder.content.setText(map.get("message").toString());
-		String[] follows = (String[]) map.get("followId");
-		for (int i = 0; i < follows.length; i++) {
-			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT);
-			JoinTextView join = new JoinTextView(context, follows[i]);
-			holder.layout.addView(join, params);
-		}
 		return convertView;
 	}
 
-	public class JoinTextView extends TextView {
-		String id;
-		UserInformation info;
-
-		public JoinTextView(Context context, String id) {
-			super(context);
-			this.id = id;
-			info = null;
+	class MyOnClickListener implements OnClickListener {
+		int position;
+		private NewsAdapter adapter;
+		String newsId;
+		public MyOnClickListener(NewsAdapter adapter, int position, String newsId) {
+			this.position = position;
+			this.adapter = adapter;
+			this.newsId = newsId;
 		}
 
 		@Override
-		public boolean onTouchEvent(MotionEvent event) {
-			if (event.getAction() == MotionEvent.ACTION_UP) {
-				String str = HttpWork.hw.getUserInfo(id);
-				try {
-					info = new UserInformation(str);
-				} catch (JSONException e) {
-					info = new UserInformation();
-				}
-			}
-			return true;
+		public void onClick(View v) {
+			NetWork.followNews(parent.mInfo.id,
+					data.get(position).get("id"));
+			Log.v("NewsAdapter",newsId+":"+ position);
+			NetWork.followNews(parent.mInfo.id, newsId);
+			News news = NetWork.getNew(newsId);
+			data.set(position, news.toMap());
+			adapter.notifyDataSetChanged();
 		}
 	}
 }
